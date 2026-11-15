@@ -10,8 +10,8 @@ from .serializers import UpscSerializer
 def homeApi(request):
     return Response('User Home')
 
-@api_view(['POST','PUT','GET','DELETE'])
-def crudUser(request,pk=None):
+@api_view(['POST','PUT'])
+def crudUser(request):
     match request.method:
         case 'POST':
             #create user
@@ -22,14 +22,14 @@ def crudUser(request,pk=None):
             return Response(user.data, status=201)
         case 'PUT':
             #update
-            return Response(status=201)
-        case 'GET':
+            return Response(status=201)            
+
+def findOrDelete(request, id):
+    match request.method:
+        case 'GET':    
             #Get user
-            user = UpscUser.objects.get(userId=pk)
+            user = UpscUser.objects.get(userId=id)
             user = UpscSerializer(user)
             return Response(user.data, status=200)
         case 'DELETE':
-            #delete user
             return Response(status=201)
-
-    
