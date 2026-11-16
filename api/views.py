@@ -10,26 +10,25 @@ from .serializers import UpscSerializer
 def homeApi(request):
     return Response('User Home')
 
-@api_view(['POST','PUT'])
+@api_view(['POST'])
 def crudUser(request):
-    match request.method:
-        case 'POST':
-            #create user
-            print(f"method {request.method} \n data: {request.path}")
-            user = UpscSerializer(data = request.data)
-            if user.is_valid():
-                user.save()
-            return Response(user.data, status=201)
-        case 'PUT':
-            #update
-            return Response(status=201)            
+    #create user
+    print(request.data)
+    user = UpscSerializer(data = request.data)
+    if user.is_valid():
+        user.save()
+    return Response(user.data, status=201)
 
-def findOrDelete(request, id):
-    match request.method:
-        case 'GET':    
-            #Get user
-            user = UpscUser.objects.get(userId=id)
-            user = UpscSerializer(user)
-            return Response(user.data, status=200)
-        case 'DELETE':
-            return Response(status=201)
+@api_view(['GET'])
+def findUser(request, id):
+
+    print(f"method {request.method} \n data: {id}")
+    #Get user
+    user = UpscSerializer(UpscUser.objects.get(userId=id),many = False)
+    return Response(user.data)
+
+@api_view(['GET'])
+def findAllUsers(request):
+    user = UpscUser.objects.all()
+    usersSerialized = UpscSerializer(user, many=True)
+    return Response(usersSerialized.data)
